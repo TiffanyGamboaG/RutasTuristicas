@@ -1,56 +1,56 @@
 #include "GraphicsManager.h"
 
-void GraphicsManager::loadImageMenu()
-{ 
-    RenderWindow window(sf::VideoMode(1280, 720), "Ventana"); 
+GraphicsManager::GraphicsManager()
+{
+    menuImage =true;
+}
 
-    Texture menu; 
-    if (!menu.loadFromFile("mapaCR.png")) { 
-        return; 
+void GraphicsManager::loadImageMenu(const FloatRect& menuButton, const FloatRect& exitButton)
+{ 
+    RenderWindow window(sf::VideoMode(1280, 720), "Ventana");
+
+    Texture menu;
+    if (!menu.loadFromFile("mapaCR.png")) {
+        return;
     }
-    Sprite menuSprite(menu); 
-    Texture optionsMenu; 
-    optionsMenu.loadFromFile("mapaCR2.png");
+    Sprite menuSprite(menu);
+    Texture optionsMenu;
+    if (!optionsMenu.loadFromFile("mapaCR2.png")) {
+        return;
+    }
     Sprite optionsMenuSprite(optionsMenu);
-    bool imageLoaded = false;
 
     while (window.isOpen()) {
-        handleEvents(window);
-        if (imageLoaded) {
-            drawMenu(window, optionsMenuSprite);
-        }
-        else {
+        handleEvents(window, menuButton, exitButton);
+
+        window.clear();
+        if (menuImage) {
             drawMenu(window, menuSprite);
         }
-        checkClick(window, menuSprite, optionsMenuSprite, imageLoaded);
-        window.display();
-
-    }
-}
-
-void GraphicsManager::checkClick(RenderWindow& window, Sprite& menuSprite, Sprite& optionsMenuSprite, bool& imageLoaded)
-{
-    Vector2i mousePosittion = Mouse::getPosition(window); 
-
-    int x1 = 49, y1 = 624, x2 = 209, y2 = 627, x3 = 38, y3 = 694, x4 = 229, y4 = 691;
-    int width = x4 - x1;
-    int height = y3 - y1;
-
-    IntRect buttonRect(x1,y1,width,height); 
-    if (Mouse::isButtonPressed(Mouse::Left)) { 
-        if (buttonRect.contains(mousePosittion.x, mousePosittion.y)) { 
-            imageLoaded = false;
-            menuSprite = optionsMenuSprite; 
+        else {
+            drawMenu(window, optionsMenuSprite);
         }
+        window.display();
     }
 }
 
-void GraphicsManager::handleEvents(RenderWindow& window)
+void GraphicsManager::handleEvents(RenderWindow& window, const FloatRect& menuButton, const FloatRect& exitButton)
 {
     Event event;
     while (window.pollEvent(event)) {
         if (event.type == Event::Closed) {
             window.close();
+        }
+        if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
+            Vector2f mousePosittion = window.mapPixelToCoords(Mouse::getPosition(window));
+            if (menuButton.contains(mousePosittion)&&menuImage) {
+                menuImage = false;
+            }
+           
+            else if (!menuImage && exitButton.contains(mousePosittion)) {
+            
+                window.close();
+            }
         }
     }
 }
@@ -59,21 +59,6 @@ void GraphicsManager::drawMenu(RenderWindow& window, Sprite& sprite)
 {
     window.clear();
     window.draw(sprite);
-    drawButton(window);
 }
 
-void GraphicsManager::drawButton(RenderWindow& window)
-{
-    int x1 = 49, y1 = 624, x2 = 209, y2 = 627, x3 = 38, y3 = 694, x4 = 229, y4 = 691;
 
-    IntRect buttonRect(x1,y1,x2-x1,y3-y1);
-
-    RectangleShape buttonShape;
-
-    buttonShape.setSize(Vector2f(buttonRect.width, buttonRect.height));
-    buttonShape.setPosition(Vector2f(buttonRect.left, buttonRect.top));
-    buttonShape.setFillColor(Color::Transparent);
-    buttonShape.setOutlineColor(Color::Transparent);
-    buttonShape.setOutlineThickness(2);
-    window.draw(buttonShape);
-}

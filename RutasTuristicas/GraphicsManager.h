@@ -3,12 +3,13 @@
 using namespace sf;
 
 class GraphicsManager
-{
+{private:
+    bool menuImage;
+
 public:
-    void loadImageMenu();  
-    void checkClick(RenderWindow& window, Sprite& menuSprite, Sprite& optionsMenuSprite, bool& imageLoaded);
-    void handleEvents(RenderWindow& window);  
+    GraphicsManager();
+    void loadImageMenu(const FloatRect& menuButton, const FloatRect& exitButton);
+    void handleEvents(RenderWindow& window,const FloatRect& menuButton,const FloatRect& exitButton);
     void drawMenu(RenderWindow& window,Sprite& sprite);
-    void drawButton(RenderWindow& window);
 };
 
