@@ -1,0 +1,29 @@
+[33mcommit a2ee7c538f0f2d47a0e09545e5ee79e5c8cfea6e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Tiffany Gamboa Gonzalez <tiffany.gamboa.gonzalez@est.una.ac.cr>
+Date:   Mon Oct 21 03:25:38 2024 -0600
+
+    Refactor:change how buttons were detected
+
+[33mcommit dacbe3a4c59daa5de8a7525d20fb15920a2480b4[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Tiffany Gamboa Gonzalez <tiffany.gamboa.gonzalez@est.una.ac.cr>
+Date:   Wed Oct 9 21:44:08 2024 -0600
+
+    style: change of the map image
+
+[33mcommit fda0477ca091eeb2920fcc7dc41db411265fbe5b[m
+Author: Tiffany Gamboa Gonzalez <tiffany.gamboa.gonzalez@est.una.ac.cr>
+Date:   Tue Oct 8 20:46:38 2024 -0600
+
+    feat: add new class
+
+[33mcommit b875fde354e73f3dab33baa567bdd8cf5e99cb34[m
+Author: Tiffany Gamboa Gonzalez <tiffany.gamboa.gonzalez@est.una.ac.cr>
+Date:   Wed Sep 25 20:12:24 2024 -0600
+
+    docs: add new proyect and archive .gitignore
+
+[33mcommit f51c2e59f0cb8a03b360794fb92219ac6e05c86a[m
+Author: TiffanyGamboaGonzález <tiffany.gamboa.gonzalez@est.una.ac.cr>
+Date:   Wed Sep 25 19:13:13 2024 -0600
+
+    Initial commit
