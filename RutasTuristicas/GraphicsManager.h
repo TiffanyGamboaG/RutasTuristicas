@@ -28,7 +28,10 @@ private:
     FloatRect backButton;
     FloatRect textLimitArea;
     FloatRect textLimitArea2;
-
+    FloatRect mapLimitArea;
+    FloatRect colorAreas[8];
+    Color selectedColor; 
+    Color colors[8];
 public:
     GraphicsManager();
     void loadImageMenu();
@@ -40,6 +43,7 @@ public:
     void drawRouteName(RenderWindow& window);
     void drawlines(RenderWindow& window);
     void drawCircule(RenderWindow& window);
+    void drawColorPalette(RenderWindow& window);
     ~GraphicsManager();
 };
 

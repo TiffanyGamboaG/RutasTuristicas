@@ -10,7 +10,6 @@ GraphicsManager::GraphicsManager()
     enteringPoints = false; 
     routeNameInput = " "; 
     pointNameInput = " ";
-    touristRoute = new TouristRouteList();
     routePoints = new RouteList();
     menuButton = FloatRect(50, 626, 206, 84); 
     addRouteButton = FloatRect(50, 17, 206, 84);
@@ -22,6 +21,19 @@ GraphicsManager::GraphicsManager()
     backButton = FloatRect(65, 617, 206, 84);
     textLimitArea = FloatRect(12, 41, 300, 280);
     textLimitArea2 = FloatRect(12, 321, 300, 280);
+    mapLimitArea = FloatRect(350, 2, 931, 645);
+    for (int i = 0; i < 8; ++i) {
+        colorAreas[i] = FloatRect(341+ i * 60, 641, 50, 50);
+    }
+    colors[0] = Color::Black;  
+    colors[1] = Color::White; 
+    colors[2] = Color::Red; 
+    colors[3] = Color::Green; 
+    colors[4] = Color::Blue; 
+    colors[5] = Color::Yellow; 
+    colors[6] = Color::Magenta; 
+    colors[7] = Color::Cyan; 
+    selectedColor = colors[3]; 
 }
 
 void GraphicsManager::loadImageMenu()
@@ -58,17 +70,18 @@ void GraphicsManager::loadImageMenu()
         }
         else if (informationImage) {
             drawMenu(window, informationSprite);
+            drawColorPalette(window); 
+            drawRouteName(window); 
             if (enteringRouteName) {
                 drawTextInputRouteName(window);
-                drawRouteName(window);
-            }
+            } 
             else if (enteringPoints) {
                 drawPointInstruction(window);
                 if (enteringPointName) {
                     drawTextInputPointName(window); 
-                }
+                } 
                 drawCircule(window);
-                drawlines(window); 
+                drawlines(window);
             }
         }
         
@@ -104,12 +117,28 @@ void GraphicsManager::handleEvents(RenderWindow& window)
             else if (backButton.contains(mousePosition) && informationImage) { 
                 informationImage = false;
                 optionsImage = true; 
+                enteringPointName = false;
+                enteringPoints = false;
+                enteringRouteName = false;
 
             }
-            else if (enteringPoints&&!enteringPointName) { 
-                enteringPointName = true; 
-                pointNameInput = ""; 
-                routePoints->addPoint(pointNameInput, mousePosition.x, mousePosition.y);
+            else if (editRouteButton.contains(mousePosition) && optionsImage) {
+                optionsImage = false; 
+                informationImage = true;
+                
+            }
+
+            if (mapLimitArea.contains(mousePosition)) {
+                pointNameInput = "";
+                enteringPointName = true;
+                routePoints->addPoint(pointNameInput, mousePosition.x, mousePosition.y); 
+            }
+
+            for (int i = 0; i < 8; ++i) {
+                if (colorAreas[i].contains(mousePosition)) {
+                    selectedColor = colors[i];  
+                    break;
+                }
             }
         }
        
@@ -120,7 +149,6 @@ void GraphicsManager::handleEvents(RenderWindow& window)
             else if (event.text.unicode == 13) { 
                 enteringRouteName = false;
                 touristRoute->addRoute(routeNameInput);
-                cout << "Ruta agregada: " << routeNameInput << endl;
                 routeNameInput = "";
                 enteringPoints = true; 
             }
@@ -134,7 +162,6 @@ void GraphicsManager::handleEvents(RenderWindow& window)
             }
             else if (event.text.unicode == 13) { 
                 enteringPointName = false;
-                cout << "Punto agregado: " << pointNameInput << endl;
                 pointNameInput = ""; 
             }
             else if (event.text.unicode < 500) {
@@ -334,10 +361,10 @@ void GraphicsManager::drawlines(RenderWindow& window)
 
     while (current != nullptr) {
         
-        lines.append(Vertex(Vector2f(current->positionX, current->positionY), Color::Red)); 
+        lines.append(Vertex(Vector2f(current->positionX, current->positionY), selectedColor)); 
 
         if (current->next != nullptr) {
-            lines.append(Vertex(Vector2f(current->next->positionX, current->next->positionY), Color::Red)); 
+            lines.append(Vertex(Vector2f(current->next->positionX, current->next->positionY), selectedColor)); 
         }
         
         current = current->next;  
@@ -351,8 +378,25 @@ void GraphicsManager::drawCircule(RenderWindow& window)
     while (current != nullptr) {
         CircleShape circle(5); 
         circle.setPosition(current->positionX - 5, current->positionY - 5); 
-        circle.setFillColor(Color::Green);
-        window.draw(circle);
+        circle.setFillColor(selectedColor);
+        circle.setOutlineColor(selectedColor);
+        if (mapLimitArea.contains(circle.getPosition())) { 
+            window.draw(circle); 
+        }
         current = current->next;
+    }
+}
+
+void GraphicsManager::drawColorPalette(RenderWindow& window)
+{
+    int startX = 341;
+    int startY = 641;
+    int size = 50;
+
+    for (size_t i = 0; i < 8; ++i) {
+        RectangleShape colorBox(Vector2f(size, size));
+        colorBox.setFillColor(colors[i]); 
+        colorBox.setPosition(startX + i * (size + 10), startY); 
+        window.draw(colorBox); 
     }
 }
