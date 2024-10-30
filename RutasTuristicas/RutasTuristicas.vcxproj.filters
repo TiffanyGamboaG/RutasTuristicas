@@ -21,19 +21,10 @@
     <ClCompile Include="GraphicsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Point.cpp">
+    <ClCompile Include="RouteList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PointNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Route.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TouristRoute.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RouteNode.cpp">
+    <ClCompile Include="TouristRouteList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,19 +32,10 @@
     <ClInclude Include="GraphicsManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Point.h">
+    <ClInclude Include="RouteList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PointNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Route.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TouristRoute.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RouteNode.h">
+    <ClInclude Include="TouristRouteList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

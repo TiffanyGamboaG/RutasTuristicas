@@ -1,28 +1,45 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <string>
-#include"TouristRoute.h"
+#include "TouristRouteList.h"
 using namespace std;
 using namespace sf;
 
 class GraphicsManager
-{private:
+{
+private:
     bool menuImage;
     bool optionsImage;
     bool informationImage;
-    bool enteringRouteName;      
-    string routeNameInput;    
-    TouristRoute* touristRoutes;
+    bool enteringRouteName;  
+    bool enteringPointName;
+    bool enteringPoints; 
+    string routeNameInput;
+    string pointNameInput;
+    TouristRouteList* touristRoute;
+    RouteList* routePoints;
+    FloatRect menuButton;
+    FloatRect addRouteButton;
+    FloatRect showRoutesButton;
+    FloatRect editRouteButton;
+    FloatRect changeColorButton;
+    FloatRect deleteRouteButton;
+    FloatRect exitButton;
+    FloatRect backButton;
     FloatRect textLimitArea;
+    FloatRect textLimitArea2;
 
 public:
     GraphicsManager();
-    void setTouristRoutes(TouristRoute* routes);
-    void loadImageMenu(const FloatRect& menuButton, const FloatRect& addRouteButton, const FloatRect& backButton,
-        const FloatRect& exitButton);
-    void handleEvents(RenderWindow& window,const FloatRect& menuButton, const FloatRect& addRouteButton,
-        const FloatRect& backButton,const FloatRect& exitButton);
+    void loadImageMenu();
+    void handleEvents(RenderWindow& window);
     void drawMenu(RenderWindow& window,Sprite& sprite);
-    void drawTextInput(RenderWindow& window);
+    void drawTextInputRouteName(RenderWindow& window);
+    void drawTextInputPointName(RenderWindow& window);
+    void drawPointInstruction(RenderWindow& window);
+    void drawRouteName(RenderWindow& window);
+    void drawlines(RenderWindow& window);
+    void drawCircule(RenderWindow& window);
+    ~GraphicsManager();
 };
 
