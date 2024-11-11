@@ -9,11 +9,11 @@ class RouteNode
 {
 public:
 	string pointName;
-	float positionX;
-	float positionY;
+	int positionX;
+	int positionY;
 	RouteNode* next;
 	RouteNode* previuos;
-    RouteNode(string&name,float coordinateX,float coordinateY):pointName(name),positionX(coordinateX),positionY(coordinateY), next(nullptr), previuos(nullptr) {}
+    RouteNode(string&name,int coordinateX,int coordinateY):pointName(name),positionX(coordinateX),positionY(coordinateY), next(nullptr), previuos(nullptr) {}
 };
 
 class RouteList
@@ -22,7 +22,8 @@ public:
 	RouteNode* head;
 	RouteNode* tail;
 	RouteList():head(nullptr),tail(nullptr){}
-	void addPoint(string& pointName,float coordinateX,float coordinateY);
+	void addPoint(string& pointName,int coordinateX,int coordinateY);
+	void clearPoints();
 	~RouteList();
 };
 

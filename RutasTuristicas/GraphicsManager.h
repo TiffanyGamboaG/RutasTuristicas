@@ -31,7 +31,9 @@ private:
     FloatRect mapLimitArea;
     FloatRect colorAreas[8];
     Color selectedColor; 
-    Color colors[8];
+    Color colors[7];
+    int positionX;
+    int positionY;
 public:
     GraphicsManager();
     void loadImageMenu();

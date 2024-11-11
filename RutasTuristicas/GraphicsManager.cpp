@@ -2,16 +2,17 @@
 
 GraphicsManager::GraphicsManager()
 {
-    menuImage =true;
+    menuImage = true;
     optionsImage = false;
     informationImage = false;
     enteringRouteName = false;
     enteringPointName = false;
-    enteringPoints = false; 
-    routeNameInput = " "; 
+    enteringPoints = false;
+    routeNameInput = " ";
     pointNameInput = " ";
+    touristRoute = new TouristRouteList();
     routePoints = new RouteList();
-    menuButton = FloatRect(50, 626, 206, 84); 
+    menuButton = FloatRect(50, 626, 206, 84);
     addRouteButton = FloatRect(50, 17, 206, 84);
     showRoutesButton = FloatRect(50, 111, 206, 84);
     editRouteButton = FloatRect(50, 212, 206, 84);
@@ -21,19 +22,20 @@ GraphicsManager::GraphicsManager()
     backButton = FloatRect(65, 617, 206, 84);
     textLimitArea = FloatRect(12, 41, 300, 280);
     textLimitArea2 = FloatRect(12, 321, 300, 280);
-    mapLimitArea = FloatRect(350, 2, 931, 645);
-    for (int i = 0; i < 8; ++i) {
-        colorAreas[i] = FloatRect(341+ i * 60, 641, 50, 50);
+    mapLimitArea = FloatRect(350, 2, 931, 642);
+    for (int i = 0; i < 7; ++i) {
+        colorAreas[i] = FloatRect(461 + i * 60, 641, 50, 50);
     }
-    colors[0] = Color::Black;  
-    colors[1] = Color::White; 
-    colors[2] = Color::Red; 
-    colors[3] = Color::Green; 
-    colors[4] = Color::Blue; 
-    colors[5] = Color::Yellow; 
-    colors[6] = Color::Magenta; 
-    colors[7] = Color::Cyan; 
+    colors[0] = Color::Black;
+    colors[1] = Color::Red;
+    colors[2] = Color::Green;
+    colors[3] = Color::Blue;
+    colors[4] = Color::Yellow; 
+    colors[5] = Color::Magenta; 
+    colors[6] = Color::Cyan; 
     selectedColor = colors[3]; 
+    positionX = 0;
+    positionY = 0;
 }
 
 void GraphicsManager::loadImageMenu()
@@ -68,9 +70,9 @@ void GraphicsManager::loadImageMenu()
         else if (optionsImage) {
             drawMenu(window, optionsMenuSprite);
         }
+       
         else if (informationImage) {
-            drawMenu(window, informationSprite);
-            drawColorPalette(window); 
+            drawMenu(window, informationSprite); 
             drawRouteName(window); 
             if (enteringRouteName) {
                 drawTextInputRouteName(window);
@@ -78,13 +80,13 @@ void GraphicsManager::loadImageMenu()
             else if (enteringPoints) {
                 drawPointInstruction(window);
                 if (enteringPointName) {
-                    drawTextInputPointName(window); 
+                    drawTextInputPointName(window);  
                 } 
                 drawCircule(window);
                 drawlines(window);
+                drawColorPalette(window); 
             }
         }
-        
         window.display();
     }
 }
@@ -92,7 +94,7 @@ void GraphicsManager::loadImageMenu()
 void GraphicsManager::handleEvents(RenderWindow& window)
 {
     Event event;
- 
+  
     while (window.pollEvent(event)) {
         if (event.type == Event::Closed) {
             window.close();
@@ -108,7 +110,7 @@ void GraphicsManager::handleEvents(RenderWindow& window)
                 informationImage = true;
                 enteringRouteName = true;
                 routeNameInput = "";
-                
+                routePoints->clearPoints();
             }
             else if (exitButton.contains(mousePosition)&&optionsImage) {
             
@@ -116,25 +118,23 @@ void GraphicsManager::handleEvents(RenderWindow& window)
             }
             else if (backButton.contains(mousePosition) && informationImage) { 
                 informationImage = false;
-                optionsImage = true; 
+                optionsImage = true;
                 enteringPointName = false;
                 enteringPoints = false;
-                enteringRouteName = false;
-
+                enteringRouteName = false; 
             }
             else if (editRouteButton.contains(mousePosition) && optionsImage) {
                 optionsImage = false; 
                 informationImage = true;
-                
             }
 
-            if (mapLimitArea.contains(mousePosition)) {
-                pointNameInput = "";
-                enteringPointName = true;
-                routePoints->addPoint(pointNameInput, mousePosition.x, mousePosition.y); 
+            if (mapLimitArea.contains(mousePosition) && !enteringPointName) {
+                positionX = mousePosition.x;
+                positionY = mousePosition.y;
+                enteringPointName = true; 
             }
 
-            for (int i = 0; i < 8; ++i) {
+            for (int i = 0; i < 7; ++i) {
                 if (colorAreas[i].contains(mousePosition)) {
                     selectedColor = colors[i];  
                     break;
@@ -150,7 +150,7 @@ void GraphicsManager::handleEvents(RenderWindow& window)
                 enteringRouteName = false;
                 touristRoute->addRoute(routeNameInput);
                 routeNameInput = "";
-                enteringPoints = true; 
+                enteringPoints = true;  
             }
             else if (event.text.unicode < 500) {
                 routeNameInput += static_cast<char>(event.text.unicode);
@@ -161,8 +161,11 @@ void GraphicsManager::handleEvents(RenderWindow& window)
                 pointNameInput.pop_back();
             }
             else if (event.text.unicode == 13) { 
-                enteringPointName = false;
-                pointNameInput = ""; 
+                enteringPointName = false; 
+                routePoints->addPoint(pointNameInput,positionX, positionY);
+                positionX = 0;
+                positionY = 0;
+                pointNameInput = "";
             }
             else if (event.text.unicode < 500) {
                 pointNameInput += static_cast<char>(event.text.unicode);
@@ -176,7 +179,6 @@ void GraphicsManager::drawMenu(RenderWindow& window, Sprite& sprite)
 {
     window.clear();
     window.draw(sprite); 
-   
 }
 
 void GraphicsManager::drawTextInputRouteName(RenderWindow& window)
@@ -345,7 +347,6 @@ void GraphicsManager::drawRouteName(RenderWindow& window)
         text.setPosition(textLimitArea2.left + 5, textLimitArea2.top + 5 + lineCounter * lineSpacing);
         text.setFillColor(Color::Black);
 
-        
         window.draw(text);
 
         current = current->next; 
@@ -355,10 +356,10 @@ void GraphicsManager::drawRouteName(RenderWindow& window)
 
 void GraphicsManager::drawlines(RenderWindow& window)
 {
-    VertexArray lines(Lines);  
+    VertexArray lines(Lines); 
 
     RouteNode* current = routePoints->head; 
-
+    
     while (current != nullptr) {
         
         lines.append(Vertex(Vector2f(current->positionX, current->positionY), selectedColor)); 
@@ -374,14 +375,28 @@ void GraphicsManager::drawlines(RenderWindow& window)
 
 void GraphicsManager::drawCircule(RenderWindow& window)
 {
+    Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/times.ttf")) {
+        return;
+    }
+    
     RouteNode* current = routePoints->head;
     while (current != nullptr) {
         CircleShape circle(5); 
         circle.setPosition(current->positionX - 5, current->positionY - 5); 
         circle.setFillColor(selectedColor);
         circle.setOutlineColor(selectedColor);
+
+        Text pointNameText;
+        pointNameText.setFont(font);
+        pointNameText.setString(current->pointName);
+        pointNameText.setCharacterSize(18);
+        pointNameText.setFillColor(selectedColor);
+        pointNameText.setPosition(current->positionX + 10, current->positionY - 5);
+       
         if (mapLimitArea.contains(circle.getPosition())) { 
-            window.draw(circle); 
+            window.draw(pointNameText); 
+            window.draw(circle);
         }
         current = current->next;
     }
@@ -389,14 +404,14 @@ void GraphicsManager::drawCircule(RenderWindow& window)
 
 void GraphicsManager::drawColorPalette(RenderWindow& window)
 {
-    int startX = 341;
+    int startX = 461;
     int startY = 641;
-    int size = 50;
+    int sizeRectangle = 50;
 
-    for (size_t i = 0; i < 8; ++i) {
-        RectangleShape colorBox(Vector2f(size, size));
+    for (size_t i = 0; i < 7; ++i) {
+        RectangleShape colorBox(Vector2f(sizeRectangle, sizeRectangle));
         colorBox.setFillColor(colors[i]); 
-        colorBox.setPosition(startX + i * (size + 10), startY); 
+        colorBox.setPosition(startX + i * (static_cast<unsigned long long>(sizeRectangle) + 10), startY);
         window.draw(colorBox); 
     }
 }

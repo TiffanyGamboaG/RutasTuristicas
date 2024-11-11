@@ -15,7 +15,7 @@ public:
 	RouteList routePoints;
 	TouristRouteNode(string name):routeName(name),next(nullptr),previuos(nullptr){}
 
-	void addPoint(string& pointName, float positionX, float positionY) {
+	void addPoint(string& pointName, int positionX, int positionY) {
 		routePoints.addPoint(pointName,positionX,positionY);
 	}
 };

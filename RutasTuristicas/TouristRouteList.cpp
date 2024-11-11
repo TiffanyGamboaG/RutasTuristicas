@@ -12,7 +12,6 @@ void TouristRouteList::addRoute(string& routeName)
 		newNode->previuos = tail;
 		tail = newNode;
 	}
-	
 }
 
 TouristRouteList::~TouristRouteList()
