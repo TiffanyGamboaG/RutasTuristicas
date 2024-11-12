@@ -12,11 +12,11 @@ public:
 	string routeName;
 	TouristRouteNode* next;
 	TouristRouteNode* previuos;
-	RouteList routePoints;
+	RouteList routePointsTourist;
 	TouristRouteNode(string name):routeName(name),next(nullptr),previuos(nullptr){}
 
 	void addPoint(string& pointName, int positionX, int positionY) {
-		routePoints.addPoint(pointName,positionX,positionY);
+		routePointsTourist.addPoint(pointName,positionX,positionY);
 	}
 };
 class TouristRouteList

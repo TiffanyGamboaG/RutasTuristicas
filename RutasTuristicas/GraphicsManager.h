@@ -14,6 +14,7 @@ private:
     bool enteringRouteName;  
     bool enteringPointName;
     bool enteringPoints; 
+    bool  displayRouteSelection;
     string routeNameInput;
     string pointNameInput;
     TouristRouteList* touristRoute;
@@ -34,18 +35,24 @@ private:
     Color colors[7];
     int positionX;
     int positionY;
+    void handleEvents(RenderWindow& window);
+    void drawMenu(RenderWindow& window, Sprite& sprite);
+    void drawTextInputRouteName(RenderWindow& window);
+    void drawTextInputPointName(RenderWindow& window);
+    void drawPointInstruction(RenderWindow& window); 
+    void drawRouteName(RenderWindow& window); 
+    void drawlines(RenderWindow& window);
+    void drawCircule(RenderWindow& window);
+    void drawColorPalette(RenderWindow& window); 
+    void drawTextRouteForEdit(RenderWindow& window); 
 public:
     GraphicsManager();
     void loadImageMenu();
-    void handleEvents(RenderWindow& window);
-    void drawMenu(RenderWindow& window,Sprite& sprite);
-    void drawTextInputRouteName(RenderWindow& window);
-    void drawTextInputPointName(RenderWindow& window);
-    void drawPointInstruction(RenderWindow& window);
-    void drawRouteName(RenderWindow& window);
-    void drawlines(RenderWindow& window);
-    void drawCircule(RenderWindow& window);
-    void drawColorPalette(RenderWindow& window);
     ~GraphicsManager();
+  
+   // void drawCircule(RenderWindow& window);
+   // void drawColorPalette(RenderWindow& window);
+   // void drawTextRouteForEdit(RenderWindow& window);*/
+   // ~GraphicsManager();
 };
 
