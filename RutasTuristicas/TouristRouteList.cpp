@@ -73,27 +73,32 @@ void TouristRouteList::loadRoutesFromFiles(const string& directory)
 {
 	int routeCount = 1;
 	while (true) {
-
 		string fileName = directory + "/Route" + to_string(routeCount) + ".txt";
 		ifstream inFile(fileName);
-
 		if (!inFile.is_open()) {
-			break;
+			break; 
 		}
-
 		string routeName;
 		getline(inFile, routeName);
 
-		TouristRouteNode* newRoute = new TouristRouteNode(routeName);
 		addRoute(routeName);
-
-		string pointName;
-		int x, y;
-		while (inFile >> pointName >> x >> y) {
-			newRoute->addPoint(pointName, x, y);
+		TouristRouteNode* currentRoute = head;
+		while (currentRoute != nullptr) {
+			if (currentRoute->routeName == routeName) {
+				break; 
+			}
+			currentRoute = currentRoute->next;
 		}
-		inFile.close();
-		routeCount++;
+
+		if (currentRoute != nullptr) { 
+			string pointName;
+			int x, y;
+			while (inFile >> pointName >> x >> y) {
+				currentRoute->addPoint(pointName, x, y);
+			}
+		}
+		inFile.close(); 
+		routeCount++; 
 	}
 }
 

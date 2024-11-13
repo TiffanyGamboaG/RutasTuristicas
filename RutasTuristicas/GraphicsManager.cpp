@@ -21,7 +21,7 @@ void GraphicsManager::handleEvents(RenderWindow& window)
 				routePoints->clearPoints();
 			}
 			else if (exitButton.contains(mousePosition) && optionsImage) {
-				saveRoutes(); 
+				saveRoutes();
 				window.close();
 			}
 			else if (backButton.contains(mousePosition) && informationImage) {
@@ -34,15 +34,13 @@ void GraphicsManager::handleEvents(RenderWindow& window)
 			else if (editRouteButton.contains(mousePosition) && optionsImage) {
 				optionsImage = false;
 				informationImage = true;
-				editingRouteName = true;  
-				editingRouteNameInput = ""; 
-			} 
+			}
 			else if (loadRouteButton.contains(mousePosition) && optionsImage) {
-				loadRoutes(); 
+				loadRoutes();
 			}
 			if (mapLimitArea.contains(mousePosition) && !enteringPointName) {
-				positionX = mousePosition.x;
-				positionY = mousePosition.y;
+				pointPositionX = mousePosition.x;
+				pointPositionY = mousePosition.y;
 				enteringPointName = true;
 			}
 
@@ -53,7 +51,7 @@ void GraphicsManager::handleEvents(RenderWindow& window)
 				}
 			}
 		}
-		
+
 		if (enteringRouteName && event.type == Event::TextEntered) {
 			if (event.text.unicode == '\b' && !routeNameInput.empty()) {
 				routeNameInput.pop_back();
@@ -74,59 +72,13 @@ void GraphicsManager::handleEvents(RenderWindow& window)
 			}
 			else if (event.text.unicode == 13) {
 				enteringPointName = false;
-				routePoints->addPoint(pointNameInput, positionX, positionY);
-				positionX = 0;
-				positionY = 0;
+				routePoints->addPoint(pointNameInput, pointPositionX, pointPositionY);
+				pointPositionX = 0;
+				pointPositionY = 0;
 				pointNameInput = "";
 			}
 			else if (event.text.unicode < 500) {
 				pointNameInput += static_cast<char>(event.text.unicode);
-			}
-		}
-		if (editingRouteName && event.type == Event::TextEntered) {
-			if (event.text.unicode == '\b' && !editingRouteNameInput.empty()) {
-				editingRouteNameInput.pop_back();
-			}
-			else if (event.text.unicode == 13) {
-				editingRouteName = false;
-				
-				TouristRouteNode* current = touristRoute->head;
-				bool routeFound = false;
-				while (current != nullptr) {
-					if (current->routeName == editingRouteNameInput) {
-						routeFound = true;
-						break;
-					}
-					current = current->next;
-				}
-				if (routeFound) {
-					routeFoundOptions = true; 
-				}  
-			}
-			else if (event.text.unicode < 500) {
-				editingRouteNameInput += static_cast<char>(event.text.unicode);
-			}
-		}
-		if (event.type == Event::TextEntered) {
-			if (event.text.unicode == '\b') {
-
-				if (!optionInput.empty()) {
-					optionInput.pop_back();
-				}
-			}
-			else if (event.text.unicode == 13) {
-				if (optionInput == "1") {
-					cout << "hello";
-				}
-				else if (optionInput == "2") {
-					deleteRouteFromList(editingRouteNameInput);
-					cout << editingRouteNameInput;
-				}
-				optionInput = "";
-				editingRouteNameInput = ""; 
-			}
-			else if (event.text.unicode < 500) {
-				optionInput += static_cast<char>(event.text.unicode);
 			}
 		}
 	}
@@ -167,7 +119,6 @@ void GraphicsManager::drawTextInputRouteName(RenderWindow& window)
 				for (int j = 0; j < currentLineLength; ++j) {
 					lines[lineCounter][j] = currentLine[j];
 				}
-
 				lineCounter++;
 				currentLineLength = 0;
 				currentLine[currentLineLength] = currentCharacter;
@@ -272,13 +223,13 @@ void GraphicsManager::drawRouteName(RenderWindow& window)
 	const int lineSpacing = 25;
 	if (touristRoute->head == nullptr) {
 		Text noRoutesText("No hay rutas disponibles.", font, 20);
-		noRoutesText.setPosition(textLimitArea2.left + 5, textLimitArea2.top + 5);
+		noRoutesText.setPosition(textLimitAreaRouteName.left + 5, textLimitAreaRouteName.top + 5);
 		noRoutesText.setFillColor(Color::Black);
 		window.draw(noRoutesText);
 		return;
 	}
 	Text headerText("Rutas Agregadas", font, 20);
-	headerText.setPosition(textLimitArea2.left + 5, textLimitArea2.top + 5);
+	headerText.setPosition(textLimitAreaRouteName.left + 5, textLimitAreaRouteName.top + 5);
 	headerText.setFillColor(Color::Black);
 	window.draw(headerText);
 	int lineCounter = 1;
@@ -290,30 +241,12 @@ void GraphicsManager::drawRouteName(RenderWindow& window)
 			routeName = routeName.substr(0, characterLimit) + "...";
 		}
 		Text text(routeName, font, 20);
-		text.setPosition(textLimitArea2.left + 5, textLimitArea2.top + 5 + lineCounter * lineSpacing);
+		text.setPosition(textLimitAreaRouteName.left + 5, textLimitAreaRouteName.top + 5 + lineCounter * lineSpacing);
 		text.setFillColor(Color::Black);
 		window.draw(text);
 		current = current->next;
 		lineCounter++;
 	}
-
-}
-
-void GraphicsManager::drawlines(RenderWindow& window)
-{
-	VertexArray lines(Lines);
-	RouteNode* current = routePoints->head;
-
-	while (current != nullptr) {
-
-		lines.append(Vertex(Vector2f(current->positionX, current->positionY), selectedColor));
-
-		if (current->next != nullptr) {
-			lines.append(Vertex(Vector2f(current->next->positionX, current->next->positionY), selectedColor));
-		}
-		current = current->next;
-	}
-	window.draw(lines);
 }
 
 void GraphicsManager::drawCircule(RenderWindow& window)
@@ -359,142 +292,51 @@ void GraphicsManager::drawColorPalette(RenderWindow& window)
 	}
 }
 
-void GraphicsManager::drawTextInputRouteToEdit(RenderWindow& window)
+void GraphicsManager::drawCurved(RenderWindow& window)
 {
-	Font font;
-	if (!font.loadFromFile("C:/Windows/Fonts/times.ttf")) {
-		return;
-	}
-	if (touristRoute->head == nullptr) {
-		return;
-	}
-	const int characterLimit = 28;
-	const int lineLimit = 10;
-	const int lineSpacing = 25;
+	RouteNode* currentRoute = routePoints->head; 
 
-	char lines[lineLimit][30] = { {'\0'}, {'\0'}, {'\0'}, {'\0'}, {'\0'}, {'\0'}, {'\0'}, {'\0'}, {'\0'}, {'\0'} };
-	int lineCounter = 0;
-
-	string inputText = "Ingrese el nombre de la ruta a editar: " + editingRouteNameInput;
-	char currentLine[30] = "\0";
-	int currentLineLength = 0;
-
-	for (int i = 0; i < inputText.length(); ++i) {
-		char currentCharacter = inputText[i];
-		if (currentLineLength < characterLimit) {
-			currentLine[currentLineLength] = currentCharacter;
-			currentLineLength++;
-		}
-		else {
-			if (lineCounter < lineLimit) {
-				for (int j = 0; j < currentLineLength; ++j) {
-					lines[lineCounter][j] = currentLine[j];
-				}
-
-				lineCounter++;
-				currentLineLength = 0;
-				currentLine[currentLineLength] = currentCharacter;
-				currentLineLength++;
-			}
-		}
-	}
-
-	if (lineCounter < lineLimit && currentLineLength > 0) {
-		for (int j = 0; j < currentLineLength; ++j) {
-			lines[lineCounter][j] = currentLine[j];
-		}
-		lineCounter++;
-	}
-
-	for (int i = 0; i < lineCounter; ++i) {
-		Text text(lines[i], font, 20);
-		text.setPosition(textLimitArea.left + 5, textLimitArea.top + 5 + i * lineSpacing);
-		text.setFillColor(Color::Black);
-		window.draw(text);
-	}
-}
-
-void GraphicsManager::drawRouteToEdit(RenderWindow& window)
-{
-	Font font;
-	if (!font.loadFromFile("C:/Windows/Fonts/times.ttf")) {
-		return;
-	}
-	if (touristRoute->head == nullptr) {
-		return;
-	}
-
-	string message;
-	bool routeFound = false;
-
-	TouristRouteNode* currentRoute = touristRoute->head;
-	if (!editingRouteNameInput.empty()) {
-		
-		while (currentRoute != nullptr) {
-			if (currentRoute->routeName == editingRouteNameInput) {
-				routeFound = true;
-				RouteList& routePoints = currentRoute->routePointsTourist;
-				drawlines(window);
-				drawCircule(window);
-				break;
-			}
-			currentRoute = currentRoute->next;
-		}
-	}
-
-	 if (!routeFound&&currentRoute==nullptr) {
-		message = "La ruta '" + editingRouteNameInput + "' no existe.";
-	 }
-	 if (!message.empty()) {
-		 Text displayMessage(message, font, 20);
-		 displayMessage.setPosition(10, 10);
-		 displayMessage.setFillColor(Color::Black);
-		 window.draw(displayMessage);
-	 }
-}
-
-void GraphicsManager::editoptions(RenderWindow& window)
-{
-	Font font;
-	if (!font.loadFromFile("C:/Windows/Fonts/times.ttf")) {
-		return;
-	}
-	Text message("Digite una opcion:", font, 20);
-	message.setPosition(textLimitArea.left + 5, textLimitArea.top + 5);
-	message.setFillColor(Color::Black);
-	window.draw(message);
-
-	Text option1("1. Eliminar un punto", font, 18);
-	option1.setPosition(textLimitArea.left + 5, textLimitArea.top + 35);
-	option1.setFillColor(Color::Black);
-	window.draw(option1);
-
-	Text option2("2. Eliminar la ruta completa", font, 18);
-	option2.setPosition(textLimitArea.left + 5, textLimitArea.top + 60);
-	option2.setFillColor(Color::Black);
-	window.draw(option2);
-
-	Text userInputText("Opción seleccionada: " + optionInput, font, 18);
-	userInputText.setPosition(textLimitArea.left + 5, textLimitArea.top + 95);
-	userInputText.setFillColor(Color::Black);
-	window.draw(userInputText);
-}
-
-void GraphicsManager::deletePointFromRoute(const string& pointName)
-{
-	TouristRouteNode* currentRoute = touristRoute->head;
 	while (currentRoute != nullptr) {
-		if (currentRoute->routeName == editingRouteNameInput) {
-			currentRoute->routePointsTourist.deletePoint(pointName);
-			break;
-		}
+		drawCurvedLines(window, currentRoute); 
 		currentRoute = currentRoute->next;
 	}
 }
 
-void GraphicsManager::deleteRouteFromList(const string& routeName)
+void GraphicsManager::drawCurvedLines(RenderWindow& window, RouteNode* routeNode)
 {
-	touristRoute->deleteRoute(routeName);  
+	if (routeNode == nullptr || routeNode->next == nullptr) {
+		return;
+	}
+
+	VertexArray curveLines(LinesStrip);
+
+	RouteNode* currentPoint = routeNode;
+	while (currentPoint != nullptr && currentPoint->next != nullptr) {
+		RouteNode* point1 = currentPoint;
+		RouteNode* point2 = currentPoint->next;
+
+		
+		float controlX = (point1->positionX + point2->positionX) / 2;
+		float controlY = (point1->positionY + point2->positionY) - 50; 
+
+		
+		for (float i = 0; i <= 1; i += 0.01f) {
+			float x = (1 - i) * (1 - i) * point1->positionX +
+				2 * (1 - i) * i * controlX +
+				i * i * point2->positionX;
+
+			float y = (1 - i) * (1 - i) * point1->positionY +
+				2 * (1 - i) * i * controlY +
+				i * i * point2->positionY;
+
+			curveLines.append(Vertex(Vector2f(x, y), selectedColor)); 
+		}
+
+		currentPoint = point2;
+	}
+	if (curveLines.getVertexCount() > 1) {
+		window.draw(curveLines);
+	}
 }
 
 void GraphicsManager::saveRoutes()
@@ -515,14 +357,8 @@ GraphicsManager::GraphicsManager()
 	enteringRouteName = false;
 	enteringPointName = false;
 	enteringPoints = false;
-	editingRouteName = false;
-	routeFoundOptions = false;
-	deletePoint = false;
-	deleteRoute = false;
 	routeNameInput = " ";
 	pointNameInput = " ";
-	editingRouteNameInput = " ";
-	optionInput = " ";
 	touristRoute = new TouristRouteList();
 	routePoints = new RouteList();
 	menuButton = FloatRect(50, 626, 206, 84);
@@ -532,7 +368,7 @@ GraphicsManager::GraphicsManager()
 	exitButton = FloatRect(50, 305, 206, 84);
 	backButton = FloatRect(65, 617, 206, 84);
 	textLimitArea = FloatRect(12, 41, 300, 280);
-	textLimitArea2 = FloatRect(12, 321, 300, 280);
+	textLimitAreaRouteName = FloatRect(12, 321, 300, 280); 
 	mapLimitArea = FloatRect(350, 2, 931, 642);
 	for (int i = 0; i < 7; ++i) {
 		colorAreas[i] = FloatRect(461 + i * 60, 641, 50, 50);
@@ -545,8 +381,8 @@ GraphicsManager::GraphicsManager()
 	colors[5] = Color::Magenta;
 	colors[6] = Color::Cyan;
 	selectedColor = colors[3];
-	positionX = 0;
-	positionY = 0;
+	pointPositionX = 0;
+	pointPositionY = 0;
 }
 
 void GraphicsManager::loadImageMenu()
@@ -596,19 +432,9 @@ void GraphicsManager::loadImageMenu()
 					drawTextInputPointName(window);
 				}
 				drawCircule(window);
-				drawlines(window);
+				drawCurved(window);
 				drawColorPalette(window);
 			}
-			if (editingRouteName) {
-				drawTextInputRouteToEdit(window);
-				drawRouteToEdit(window);
-			}
-			if (routeFoundOptions) {
-				
-				editoptions(window);
-				drawColorPalette(window);
-			}
-			
 		}
 		window.display();
 	}
