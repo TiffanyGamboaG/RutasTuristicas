@@ -14,14 +14,19 @@ private:
     bool enteringRouteName;  
     bool enteringPointName;
     bool enteringPoints; 
-    bool  displayRouteSelection;
+    bool editingRouteName;
+    bool routeFoundOptions;
+    bool deletePoint;
+    bool deleteRoute;
     string routeNameInput;
     string pointNameInput;
+    string editingRouteNameInput;
+    string optionInput;
     TouristRouteList* touristRoute;
     RouteList* routePoints;
     FloatRect menuButton;
     FloatRect addRouteButton;
-    FloatRect showRoutesButton;
+    FloatRect loadRouteButton; 
     FloatRect editRouteButton;
     FloatRect changeColorButton;
     FloatRect deleteRouteButton;
@@ -44,15 +49,16 @@ private:
     void drawlines(RenderWindow& window);
     void drawCircule(RenderWindow& window);
     void drawColorPalette(RenderWindow& window); 
-    void drawTextRouteForEdit(RenderWindow& window); 
+    void drawTextInputRouteToEdit(RenderWindow& window);
+    void drawRouteToEdit(RenderWindow& window);
+    void editoptions(RenderWindow& window);
+    void deletePointFromRoute(const string& pointName);
+    void deleteRouteFromList(const string& routeName);
+    void saveRoutes();
+    void loadRoutes();
 public:
     GraphicsManager();
     void loadImageMenu();
     ~GraphicsManager();
-  
-   // void drawCircule(RenderWindow& window);
-   // void drawColorPalette(RenderWindow& window);
-   // void drawTextRouteForEdit(RenderWindow& window);*/
-   // ~GraphicsManager();
 };
 

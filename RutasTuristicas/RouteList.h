@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include<string>
+#include <fstream>
 using namespace std;
 using namespace sf;
 
@@ -24,6 +25,7 @@ public:
 	RouteList():head(nullptr),tail(nullptr){}
 	void addPoint(string& pointName,int coordinateX,int coordinateY);
 	void clearPoints();
+	void deletePoint(const string& pointName);
 	~RouteList();
 };
 

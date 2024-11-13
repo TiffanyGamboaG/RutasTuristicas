@@ -3,6 +3,7 @@
 #include <iostream>
 #include<string>
 #include "RouteList.h"
+#include "fstream"
 using namespace std;
 using namespace sf;
 
@@ -26,6 +27,9 @@ public:
 	TouristRouteNode* tail;
 	TouristRouteList():head(nullptr),tail(nullptr){}
 	void addRoute(string& routeName);
+	void deleteRoute(const string& routeName);
+	void saveRoutesToFiles(const string& directory);
+	void loadRoutesFromFiles(const string& directory);
 	~TouristRouteList();
 };
 
